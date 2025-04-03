@@ -1,1 +1,6 @@
-
+<changeSet id="1" author="dev">
+    <sqlFile path="../scripts/001_create_users.sql"
+             relativeToChangelogFile="true"
+             splitStatements="true"
+             stripComments="true"/>
+</changeSet>
