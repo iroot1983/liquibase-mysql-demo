@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-org/liquibase-mysql-demo.git'
+                git 'https://github.com/iroot1983/liquibase-mysql-demo.git'
             }
         }
 
