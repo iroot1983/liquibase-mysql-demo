@@ -2,19 +2,13 @@ pipeline {
     agent any
 
     environment {
+        LIQUIBASE_HOME = '/opt/liquibase'
         DB_URL = 'jdbc:mysql://localhost:3306/testdb'
         DB_USER = 'root'
-        DB_PASS = 'qwerty123' // или credentials()
-        LIQUIBASE_HOME = '/opt/liquibase'
+        DB_PASS = 'qwerty123'  // или используй Jenkins credentials
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/iroot1983/liquibase-mysql-demo.git'
-            }
-        }
-
         stage('Run Liquibase') {
             steps {
                 sh """
@@ -26,6 +20,15 @@ pipeline {
                         update
                 """
             }
+        }
+    }
+
+    post {
+        success {
+            echo "🎉 Миграции успешно применены!"
+        }
+        failure {
+            echo "❌ Что-то пошло не так при применении миграций."
         }
     }
 }
