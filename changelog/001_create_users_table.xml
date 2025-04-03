@@ -11,5 +11,12 @@
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
+                 
+        <rollback>
+            <sqlFile path="../scripts/001_drop_users.sql"
+                     relativeToChangelogFile="true"
+                     splitStatements="true"
+                     stripComments="true"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>
