@@ -22,25 +22,46 @@ pipeline {
             }
         }
 
-        stage('Manual Rollback Decision') {
+        stage('Выбор rollback') {
             steps {
                 script {
                     def userInput = input(
-                        id: 'rollbackConfirm', message: 'Откатить миграцию?',
+                        id: 'rollbackChoice',
+                        message: 'Откатить какую миграцию?',
                         parameters: [
-                            choice(name: 'ROLLBACK', choices: ['Нет', 'Да'], description: 'Rollback последней миграции?')
+                            choice(
+                                name: 'ROLLBACK',
+                                choices: ['Ничего', 'Users', 'Orders'],
+                                description: 'Выберите, что откатить'
+                            )
                         ]
                     )
 
-                    if (userInput == 'Да') {
-                        echo "⚠️ Выполняем rollback..."
+                    if (userInput == 'Users') {
+                        echo "🔁 Откат users..."
                         sh """
                             ${LIQUIBASE_HOME}/liquibase \
+                              rollbackOneChangeSet \
                               --changeLogFile=changelog/db.changelog-master.xml \
                               --url=${DB_URL} \
                               --username=${DB_USER} \
                               --password=${DB_PASS} \
-                              rollbackCount 1
+                              --changeSetId=1 \
+                              --changeSetAuthor=dev \
+                              --changeSetPath=changelog/001_create_users_table.xml
+                        """
+                    } else if (userInput == 'Orders') {
+                        echo "🔁 Откат orders..."
+                        sh """
+                            ${LIQUIBASE_HOME}/liquibase \
+                              rollbackOneChangeSet \
+                              --changeLogFile=changelog/db.changelog-master.xml \
+                              --url=${DB_URL} \
+                              --username=${DB_USER} \
+                              --password=${DB_PASS} \
+                              --changeSetId=2 \
+                              --changeSetAuthor=dev \
+                              --changeSetPath=changelog/002_create_orders_table.xml
                         """
                     } else {
                         echo "✅ Продолжаем без отката."
